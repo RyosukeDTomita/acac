@@ -48,10 +48,12 @@ Chosen option: "1(optionalDependencies 方式)"。
 `require.resolve("acac-<platform>-<arch>/bin/acac")` でバイナリを解決して exec する。
 `postinstall` は持たない。
 
-パッケージ名は**スコープなし**(`acac` と `acac-linux-x64`)を採る。`npx acac` が素直で
-あること、npm org(スコープ)を用意せずに済むことが理由。`acac` が npm 上で取得済み/
-利用可能であることが前提で、もし名前が取れない場合はスコープ付き(`@<org>/acac` と
-`@<org>/acac-linux-x64`)へ切り替える。
+パッケージ名は、当初スコープなし(`acac`)を狙ったが、npm の名前類似ガード
+("Package name too similar to existing packages")で `acac` の publish が 403 で拒否された
+ため、**本体はスコープ付き `@sigma1881/acac`** にした(npm 自身の提案に従う)。実行される
+コマンド名(`bin`)は `acac` のまま。プラットフォーム別パッケージ `acac-linux-x64` は
+スコープなしのまま publish できたので据え置く(本体の optionalDependencies からは
+`acac-linux-x64` をそのまま参照)。利用は `npx @sigma1881/acac <user>` となる。
 
 CI(`release.yml`)は、タグ push 時に musl 静的バイナリをビルドし、(a)プラットフォーム別
 パッケージの `bin/acac` に配置 → (b)バージョンをタグに合わせる → (c)プラットフォーム別

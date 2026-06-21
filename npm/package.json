@@ -1,5 +1,5 @@
 {
-  "name": "acac",
+  "name": "@sigma1881/acac",
   "version": "0.1.0",
   "description": "Show recent AtCoder AC history as a weekly ccusage-style table",
   "bin": {
@@ -8,6 +8,9 @@
   "files": [
     "bin/"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "optionalDependencies": {
     "acac-linux-x64": "0.1.0"
   },
