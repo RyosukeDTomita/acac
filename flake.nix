@@ -53,6 +53,7 @@
             # GitHub Actions のメンテ用ツール(配布物には含まれない)。
             unstablePkgs.pinact
             unstablePkgs.ghalint
+            pkgs.cachix
             pkgs.nodejs_20
           ];
         };
