@@ -100,6 +100,41 @@ nix fmt
 
 `v*.*.*` タグを push すると、GitHub Release への成果物アップロードと npm publish が走る(`.github/workflows/release.yml`)。
 
+CI は配布用の musl 静的バイナリを **Cachix(`acac`)から取得**する(ソースからの再ビルドは
+60分級でタイムアウトするため)。なので **タグを切る前に、現在の静的ビルドを Cachix へ
+seed しておく**必要がある。
+
+#### 1. Cachix に静的ビルドを seed する
+
+```shell
+# 初回のみ token を設定(以降は不要)
+cachix authtoken <CACHIX_AUTH_TOKEN>
+
+nix build .#static
+cachix push acac ./result
+```
+
+確認(200 なら CI がヒットする。404 なら未 seed なので push する):
+
+```shell
+hash=$(basename "$(readlink -f result)" | cut -d- -f1)
+curl -s -o /dev/null -w "%{http_code}\n" "https://acac.cachix.org/$hash.narinfo"
+```
+
+##### いつ seed し直す必要があるか
+
+`.#static` の derivation が変わった時だけ。具体的には次を変更した場合:
+
+- `src/`・`app/`・`test/`・`acac.cabal`(= cabal パッケージのソース)
+- `flake.lock`(依存の更新)
+- `flake.nix` のうち **`.#static` に影響する部分**(依存・`fileset`・ghc バージョン・`pkgsStatic` 設定など)
+
+逆に **README・docs・npm・`flake.nix` の devShell やコメントだけ**の変更では seed し直し不要
+(`callCabal2nix` のソースを `fileset` で `src/app/test/acac.cabal` に絞っているため)。
+判断に迷ったら、上の narinfo 確認で 404 なら push、で確実。
+
+#### 2. タグを切って push する
+
 ```shell
 git tag v0.1.0
 git push origin v0.1.0
