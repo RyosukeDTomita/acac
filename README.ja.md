@@ -4,21 +4,19 @@
 [![release](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[(日本語READMEはこちら)](README.ja.md)
-
 ## ABOUT
 
-A CLI tool written in [Haskell](https://www.haskell.org/) for checking your recent AtCoder AC count and the problems you solved, from the command line.
+AtCoderの直近のAC数とACした問題をCLIから確認するため[Haskell](https://www.haskell.org/)製CLIツール。
 
-Inspired by [ccusage](https://ccusage.com/).
+[ccusage](https://ccusage.com/)にインスピレーションを受けて開発しました。
 
-It uses the [AtCoder Problems API](https://github.com/kenkoooo/AtCoderProblems/blob/main/doc/api.md) to fetch the AC history.
+AC履歴の取得には [AtCoder Problems API](https://github.com/kenkoooo/AtCoderProblems/blob/main/doc/api.md) を利用しています。
 
 ---
 
 ## HOW TO USE
 
-You can run it via npm (`npx`). Pass a single AtCoder username as an argument.
+npm(`npx`)で実行できる。引数に AtCoder のユーザ名を1つ渡す。
 
 ```shell
 npx acac-cli <atcoder-username>
@@ -57,7 +55,7 @@ npx acac-cli <atcoder-username>
 └──────────────────┴────┴───────────────────────────────────────────────────┘
 ```
 
-It displays your recent AC history as a weekly table. Currently, the only distribution target is linux-x64.
+直近の AC 履歴を週ごとのテーブルで表示する。現状の配布対象は linux-x64 のみ。
 
 ---
 
@@ -71,18 +69,18 @@ nix develop
 
 ### run locally
 
-Run it from cabal inside the `nix develop` shell.
+`nix develop` のシェル内で cabal から実行する。
 
 ```shell
 cabal run acac -- <atcoder-username>
 ```
 
 ```shell
-# runghc may be handier for debugging
+# デバックならrunghcの方が気楽かも
  runghc -isrc -iapp app/Main.hs HathawayNoa
 ```
 
-You can also run it directly from the flake.
+flake から直接実行することもできる。
 
 ```shell
 nix run . -- <atcoder-username>
@@ -96,7 +94,7 @@ runghc -isrc test/Spec.hs
 
 ### formatter
 
-Format everything at once with treefmt (ormolu / nixfmt / mdformat).
+treefmt(ormolu / nixfmt / mdformat)でまとめて整形する。
 
 ```shell
 nix fmt
@@ -104,38 +102,42 @@ nix fmt
 
 ### Release
 
-Pushing a `v*.*.*` tag triggers artifact upload to a GitHub Release and npm publish (`.github/workflows/release.yml`).
+`v*.*.*` タグを push すると、GitHub Release への成果物アップロードと npm publish が走る(`.github/workflows/release.yml`)。
 
-The CI **fetches the distributable musl static binary from Cachix (`acac`)** (because building from source takes around 60 minutes and times out). Therefore, **before cutting a tag, you must seed the current static build to Cachix.**
+CI は配布用の musl 静的バイナリを **Cachix(`acac`)から取得**する(ソースからの再ビルドは
+60分級でタイムアウトするため)。なので **タグを切る前に、現在の静的ビルドを Cachix へ
+seed しておく**必要がある。
 
-#### 1. Seed the static build to Cachix
+#### 1. Cachix に静的ビルドを seed する
 
 ```shell
-# Set the token only the first time (not needed afterwards)
+# 初回のみ token を設定(以降は不要)
 cachix authtoken <CACHIX_AUTH_TOKEN>
 
 nix build .#static
 cachix push acac ./result
 ```
 
-Check (200 means the CI will hit the cache; 404 means it is not seeded, so push it):
+確認(200 なら CI がヒットする。404 なら未 seed なので push する):
 
 ```shell
 hash=$(basename "$(readlink -f result)" | cut -d- -f1)
 curl -s -o /dev/null -w "%{http_code}\n" "https://acac.cachix.org/$hash.narinfo"
 ```
 
-##### When you need to re-seed
+##### いつ seed し直す必要があるか
 
-Only when the `.#static` derivation changes. Specifically, when you change the following:
+`.#static` の derivation が変わった時だけ。具体的には次を変更した場合:
 
-- `src/`, `app/`, `test/`, `acac.cabal` (= the cabal package source)
-- `flake.lock` (dependency updates)
-- the parts of `flake.nix` that **affect `.#static`** (dependencies, `fileset`, GHC version, `pkgsStatic` config, etc.)
+- `src/`・`app/`・`test/`・`acac.cabal`(= cabal パッケージのソース)
+- `flake.lock`(依存の更新)
+- `flake.nix` のうち **`.#static` に影響する部分**(依存・`fileset`・ghc バージョン・`pkgsStatic` 設定など)
 
-Conversely, changes to only README, docs, npm, or the devShell/comments in `flake.nix` do not require re-seeding (the `callCabal2nix` source is narrowed to `src/app/test/acac.cabal` via `fileset`). When in doubt, if the narinfo check above returns 404, push — that is reliable.
+逆に **README・docs・npm・`flake.nix` の devShell やコメントだけ**の変更では seed し直し不要
+(`callCabal2nix` のソースを `fileset` で `src/app/test/acac.cabal` に絞っているため)。
+判断に迷ったら、上の narinfo 確認で 404 なら push、で確実。
 
-#### 2. Cut a tag and push
+#### 2. タグを切って push する
 
 ```shell
 git tag v0.1.0
