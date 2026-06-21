@@ -1,0 +1,46 @@
+cabal-version:      3.0
+name:               acac
+version:            0.1.0.0
+synopsis:           Show recent AtCoder AC history as a weekly ccusage-style table
+license:            MIT
+author:             RyosukeDTomita
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:  Acac
+    hs-source-dirs:   src
+    build-depends:    base
+                    , aeson
+                    , containers
+                    , text
+                    , time
+    default-language: GHC2021
+
+executable acac
+    import:           warnings
+    main-is:          Main.hs
+    hs-source-dirs:   app
+    build-depends:    base
+                    , acac
+                    , aeson
+                    , http-conduit
+                    , text
+                    , time
+    default-language: GHC2021
+
+test-suite acac-test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          Spec.hs
+    hs-source-dirs:   test
+    build-depends:    base
+                    , acac
+                    , aeson
+                    , hspec
+                    , text
+                    , time
+    default-language: GHC2021

@@ -1,0 +1,22 @@
+{
+  "name": "acac",
+  "version": "0.1.0",
+  "description": "Show recent AtCoder AC history as a weekly ccusage-style table",
+  "bin": {
+    "acac": "bin/cli.js"
+  },
+  "files": [
+    "bin/"
+  ],
+  "optionalDependencies": {
+    "acac-linux-x64": "0.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RyosukeDTomita/acac.git"
+  }
+}

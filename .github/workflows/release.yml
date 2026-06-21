@@ -1,0 +1,79 @@
+name: release
+
+# v*.*.* タグの push でビルドし、GitHub Release への成果物アップロードと npm publish を行う。
+# 前提: リポジトリ設定で Immutable Releases を有効化し、タグは署名して push する。
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build static linux-x64 binary
+        run: |
+          nix build .#static
+          install -m 0755 result/bin/acac acac-linux-x64
+      - name: Create release and upload binary
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
+        with:
+          files: acac-linux-x64
+          fail_on_unmatched_files: true
+      - name: Upload binary artifact for the npm job
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: acac-linux-x64
+          path: acac-linux-x64
+
+  publish-npm:
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Download built binary
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: acac-linux-x64
+          path: artifact
+      - name: Place binary into the platform package
+        run: |
+          mkdir -p npm/packages/linux-x64/bin
+          install -m 0755 artifact/acac-linux-x64 npm/packages/linux-x64/bin/acac
+      - name: Set versions from the tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          npm --prefix npm pkg set version="$VERSION"
+          npm --prefix npm pkg set optionalDependencies.acac-linux-x64="$VERSION"
+          npm --prefix npm/packages/linux-x64 pkg set version="$VERSION"
+      - name: Publish platform package
+        working-directory: npm/packages/linux-x64
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish main package
+        working-directory: npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

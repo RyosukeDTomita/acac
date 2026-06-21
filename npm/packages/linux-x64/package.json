@@ -1,0 +1,19 @@
+{
+  "name": "acac-linux-x64",
+  "version": "0.1.0",
+  "description": "Prebuilt acac binary for linux-x64",
+  "files": [
+    "bin/"
+  ],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RyosukeDTomita/acac.git"
+  }
+}

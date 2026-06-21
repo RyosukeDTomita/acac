@@ -1,6 +1,11 @@
 input.txt
 inputs.txt
 .direnv/
+# nix build の成果物シンボリックリンク
+result
+result-*
+# npm
+node_modules/
 # https://github.com/github/gitignore/blob/main/Haskell.gitignore
 dist
 dist-*
