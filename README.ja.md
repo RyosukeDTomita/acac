@@ -93,7 +93,7 @@ cabal run acac -- <atcoder-username>
 
 ```shell
 # デバックならrunghcの方が気楽かも
- runghc -isrc -iapp app/Main.hs HathawayNoa
+runghc -isrc -iapp app/Main.hs <atcoder-username>
 ```
 
 flake から直接実行することもできる。
@@ -122,7 +122,6 @@ nix fmt
 
 #### GitHub Secretsの設定
 
-- `NPM_TOKEN`: Read & Writeかつ、Bypass 2FA
 - `CACHIX_AUTH_TOKEN`
 
 #### 1. Cachix に静的ビルドを seed する

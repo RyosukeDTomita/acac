@@ -1,7 +1,6 @@
 ---
-name: sync-ghci
-description: プロジェクト直下の .ghci を src/app/test で実際に使っている import / home モジュールへ同期する。Haskell ソースの import を足したり減らしたりしたあと、「.ghci を更新」「.ghci を同期」「使っているモジュールを .ghci に反映」などと言われたときに使う。
----
+
+## name: sync-ghci description: プロジェクト直下の .ghci を src/app/test で実際に使っている import / home モジュールへ同期する。Haskell ソースの import を足したり減らしたりしたあと、「.ghci を更新」「.ghci を同期」「使っているモジュールを .ghci に反映」などと言われたときに使う。
 
 # Sync .ghci with project imports
 

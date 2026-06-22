@@ -19,7 +19,7 @@ import Data.Map.Strict qualified as Map
 import Data.Set qualified as Set
 import Data.Text (Text)
 import Data.Text qualified as T
-import Data.Time.Calendar (Day, dayOfWeek, diffDays, showGregorian)
+import Data.Time.Calendar (Day, DayOfWeek (Sunday), addDays, dayOfWeek, dayOfWeekDiff, showGregorian)
 import Data.Time.Clock (utctDay)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 
@@ -49,15 +49,6 @@ parseArgs :: [String] -> Either String Text
 parseArgs [username] = Right (T.pack username)
 parseArgs _args = Left "usage: acac <atcoder-username>"
 
--- | epoch秒(UTC基準)を JST(UTC+9) の日付に変換する。
--- AtCoder は JST 基準なので、日付の区切りも JST で行う。
--- ghci> posixSecondsToUTCTime $ fromIntegral 0
--- 1970-01-01 00:00:00 UTC
--- ghci> utctDay $ posixSecondsToUTCTime $ fromIntegral 0
--- 1970-01-01
-toJstDay :: Int -> Day
-toJstDay epochSecond = utctDay $ posixSecondsToUTCTime $ fromIntegral $ epochSecond + 9 * 3600
-
 -- | APIが1リクエストで返す提出の最大件数(固定値)
 pageSize :: Int
 pageSize = 500
@@ -85,16 +76,17 @@ aggregate submissions =
         | s <- acs
         ]
 
--- | 集計結果(1週間ぶん)を、今日(JST)から遡る7日刻みの週バケットに分ける。
+-- | 集計結果を、日曜始まりの暦週ごとのバケットに分ける。
+-- 各日付が属する週は「その日以前で最も近い日曜」で識別する。
 -- 入力は古い順(昇順)を前提とし、古い週のグループが先(上)に来る。
-splitIntoWeeks :: Day -> [(Day, [Text])] -> [[(Day, [Text])]]
-splitIntoWeeks today xs = groupBy sameWeek xs
+splitIntoWeeks :: [(Day, [Text])] -> [[(Day, [Text])]]
+splitIntoWeeks xs = groupBy sameWeek xs
   where
     sameWeek :: (Day, [Text]) -> (Day, [Text]) -> Bool
-    sameWeek a b = weeksAgo a == weeksAgo b
-    weeksAgo :: (Day, [Text]) -> Integer
-    weeksAgo (day, _) = diffDays today day `div` 7
-
+    sameWeek a b = weekStart a == weekStart b
+    -- その日が属する週の始まり(直前の日曜)を返す
+    weekStart :: (Day, [Text]) -> Day
+    weekStart (day, _) = addDays (negate $ toInteger $ dayOfWeekDiff (dayOfWeek day) Sunday) day
 
 -- | 週ごとに集計した結果を、全体で1つの box-drawing テーブル文字列にする。
 -- ┌──────────────────┬────┬───────────────────────────────────────────────────┐
@@ -160,6 +152,15 @@ renderTable weeks = intercalate "\n" $ [top, header] ++ concatMap weekSection we
     header = renderRow headerCells
     weekSection :: [(Day, [Text])] -> [String]
     weekSection week = sep : map (renderRow . rowCells) week ++ [sep, renderRow $ totalCells week]
+
+-- | epoch秒(UTC基準)を JST(UTC+9) の日付に変換する。
+-- AtCoder は JST 基準なので、日付の区切りも JST で行う。
+-- ghci> posixSecondsToUTCTime $ fromIntegral 0
+-- 1970-01-01 00:00:00 UTC
+-- ghci> utctDay $ posixSecondsToUTCTime $ fromIntegral 0
+-- 1970-01-01
+toJstDay :: Int -> Day
+toJstDay epochSecond = utctDay $ posixSecondsToUTCTime $ fromIntegral $ epochSecond + 9 * 3600
 
 -- | 提出の contest_id と problem_id から表示用ラベルを作る。
 -- 例: formatProblemId "abc457" "abc457_c" == "abc457C"

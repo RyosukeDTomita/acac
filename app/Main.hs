@@ -3,7 +3,7 @@
 
 module Main (main) where
 
-import Acac (Submission, aggregate, nextFromSecond, parseArgs, renderTable, splitIntoWeeks, toJstDay)
+import Acac (Submission, aggregate, nextFromSecond, parseArgs, renderTable, splitIntoWeeks)
 import Control.Concurrent (threadDelay)
 import Data.Aeson (eitherDecode)
 import Data.Text (Text)
@@ -41,8 +41,7 @@ main = do
     Right username -> do
       now <- round <$> getPOSIXTime
       submissions <- fetchRecent username now
-      let today = toJstDay now
-          weeks = splitIntoWeeks today $ aggregate submissions
+      let weeks = splitIntoWeeks $ aggregate submissions
       putStr creditBanner
       putStrLn $ renderTable weeks
 

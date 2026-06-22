@@ -69,20 +69,20 @@ main = hspec $ do
                    ]
 
   describe "splitIntoWeeks" $ do
-    it "buckets days into 7-day windows counted back from today, oldest week first" $
+    it "buckets days into Sunday-start calendar weeks, oldest week first" $
+      -- 2026-06-13 Sat / 06-14 Sun / 06-20 Sat / 06-21 Sun。
+      -- 日曜始まりなので Sat と翌 Sun の境界で週が分かれる。
       splitIntoWeeks
-        (fromGregorian 2026 6 21)
-        [ (fromGregorian 2026 6 10, ["x"]),
+        [ (fromGregorian 2026 6 13, ["x"]),
           (fromGregorian 2026 6 14, ["y"]),
-          (fromGregorian 2026 6 17, ["z"]),
-          (fromGregorian 2026 6 20, ["w"])
+          (fromGregorian 2026 6 20, ["z"]),
+          (fromGregorian 2026 6 21, ["w"])
         ]
-        `shouldBe` [ [ (fromGregorian 2026 6 10, ["x"]),
-                       (fromGregorian 2026 6 14, ["y"])
+        `shouldBe` [ [(fromGregorian 2026 6 13, ["x"])],
+                     [ (fromGregorian 2026 6 14, ["y"]),
+                       (fromGregorian 2026 6 20, ["z"])
                      ],
-                     [ (fromGregorian 2026 6 17, ["z"]),
-                       (fromGregorian 2026 6 20, ["w"])
-                     ]
+                     [(fromGregorian 2026 6 21, ["w"])]
                    ]
 
   describe "renderTable" $ do
