@@ -1,35 +1,73 @@
-# acac (npm wrapper)
+# ACAC-CLI
 
-直近の AtCoder の AC 履歴を週ごとのテーブルで表示する CLI。
+[![test](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml)
+[![release](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-```sh
+[(日本語READMEはこちら)](README.ja.md)
+
+## ABOUT
+
+A CLI tool written in [Haskell](https://www.haskell.org/) for checking your recent AtCoder AC count and the problems you solved, from the command line.
+
+Inspired by [ccusage](https://ccusage.com/).
+
+It uses the [AtCoder Problems API](https://github.com/kenkoooo/AtCoderProblems/blob/main/doc/api.md) to fetch the AC history.
+
+---
+
+## HOW TO USE
+
+The following binaries are built.
+
+- Linux
+  - linux-x64
+  - linux-arm64
+- macOS
+  - darwin-arm64
+  - darwin-x64
+- Windows
+  - win32-x64
+
+```shell
 npx acac-cli <atcoder-username>
+┌──────────────────┬────┬───────────────────────────────────────────────────┐
+│ Date             │ AC │ Problems                                          │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ 2026-05-26 (Tue) │ 2  │ abc081B abc290A                                   │
+│ 2026-05-29 (Fri) │ 1  │ abc342C                                           │
+│ 2026-05-30 (Sat) │ 6  │ abc460A abc460B abc460C abc460D awc0001A awc0001B │
+│ 2026-05-31 (Sun) │ 1  │ abc460C                                           │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ week total       │ 10 │                                                   │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ 2026-06-01 (Mon) │ 1  │ abc460D                                           │
+│ 2026-06-06 (Sat) │ 3  │ abc461A abc461B abc461C                           │
+│ 2026-06-07 (Sun) │ 1  │ abc461C                                           │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ week total       │ 5  │                                                   │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ 2026-06-08 (Mon) │ 1  │ abc144B                                           │
+│ 2026-06-09 (Tue) │ 5  │ abc106B abc120B abc122B abc136B abc150B           │
+│ 2026-06-10 (Wed) │ 1  │ abc057C                                           │
+│ 2026-06-11 (Thu) │ 1  │ abc095A                                           │
+│ 2026-06-12 (Fri) │ 1  │ sumitrust2019D                                    │
+│ 2026-06-13 (Sat) │ 3  │ abc462A abc462B abc462C                           │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ week total       │ 12 │                                                   │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ 2026-06-15 (Mon) │ 5  │ APG4bA APG4bPythonA abc128C abc462B abc462D       │
+│ 2026-06-17 (Wed) │ 3  │ abc145C abc147C abc150C                           │
+│ 2026-06-18 (Thu) │ 2  │ abc054C abc448B                                   │
+│ 2026-06-19 (Fri) │ 5  │ abc054C abc245B abc273A abc425B awc0001B          │
+│ 2026-06-20 (Sat) │ 6  │ abc029C abc153D abc247C abc463A abc463B abc463C   │
+├──────────────────┼────┼───────────────────────────────────────────────────┤
+│ week total       │ 21 │                                                   │
+└──────────────────┴────┴───────────────────────────────────────────────────┘
 ```
 
-> パッケージ名は `acac-cli`。素の `acac` は npm の名前類似ガードで publish 不可だったため
-> `acac-cli` にしている。インストールされるコマンド名は `acac`。
+It displays your recent AC history as a weekly table.
 
-## 仕組み (optionalDependencies 方式)
+### Others
 
-esbuild / ccusage と同じ、プラットフォーム別パッケージ方式。
-
-- メインパッケージ `acac` は薄い JS シム(`bin/cli.js`)だけを持つ。
-- `optionalDependencies` にプラットフォーム別パッケージ(`acac-linux-x64` など)を宣言し、
-  npm が現在の `os`/`cpu` に合うものだけを自動インストールする。
-- `bin/cli.js` が `acac-<platform>-<arch>/bin/acac` を `require.resolve` して起動する。
-- install 時の追加ダウンロードは無い。
-
-詳細な設計判断は `docs/adr/0005-npm-distribution-optional-dependencies.md` を参照。
-
-## 対応プラットフォーム
-
-- 現状 **linux-x64 のみ**(`acac-linux-x64`)。他環境では実行時にエラーで停止する。
-
-## ローカルでの動作確認
-
-```sh
-nix build .#static
-mkdir -p npm/packages/linux-x64/bin
-install -m 0755 result/bin/acac npm/packages/linux-x64/bin/acac
-node npm/bin/cli.js <atcoder-username>   # require.resolve できるよう npm i 後に実行
-```
+WIP

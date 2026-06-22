@@ -18,7 +18,16 @@ It uses the [AtCoder Problems API](https://github.com/kenkoooo/AtCoderProblems/b
 
 ## HOW TO USE
 
-### linux-x64
+The following binaries are built.
+
+- Linux
+  - linux-x64
+  - linux-arm64
+- macOS
+  - darwin-arm64
+  - darwin-x64
+- Windows
+  - win32-x64
 
 ```shell
 npx acac-cli <atcoder-username>
@@ -110,11 +119,17 @@ nix fmt
 
 ### Release
 
-Pushing a `v*.*.*` tag triggers artifact upload to a GitHub Release and npm publish (`.github/workflows/release.yml`).
+Pushing a `v*.*.*` tag triggers artifact upload to a GitHub Release and npm publish.
 
-The CI **fetches the distributable musl static binary from Cachix (`acac`)** (because building from source takes around 60 minutes and times out). Therefore, **before cutting a tag, you must seed the current static build to Cachix.**
+#### Configuring GitHub Secrets
+
+- `NPM_TOKEN`: Read & Write, with Bypass 2FA
+- `CACHIX_AUTH_TOKEN`
 
 #### 1. Seed the static build to Cachix
+
+The CI fetches the distributable musl static binary from Cachix (`acac`) (because rebuilding from source takes around 60 minutes and times out).
+Therefore, before cutting a tag, you must seed the current static build to Cachix.
 
 ```shell
 # Set the token only the first time (not needed afterwards)
@@ -124,7 +139,7 @@ nix build .#static
 cachix push acac ./result
 ```
 
-Check (200 means the CI will hit the cache; 404 means it is not seeded, so push it):
+Run the following; 200 means OK. If it returns 404, it is not seeded, so push it:
 
 ```shell
 hash=$(basename "$(readlink -f result)" | cut -d- -f1)
@@ -139,7 +154,9 @@ Only when the `.#static` derivation changes. Specifically, when you change the f
 - `flake.lock` (dependency updates)
 - the parts of `flake.nix` that **affect `.#static`** (dependencies, `fileset`, GHC version, `pkgsStatic` config, etc.)
 
-Conversely, changes to only README, docs, npm, or the devShell/comments in `flake.nix` do not require re-seeding (the `callCabal2nix` source is narrowed to `src/app/test/acac.cabal` via `fileset`). When in doubt, if the narinfo check above returns 404, push — that is reliable.
+Conversely, changes to only README, docs, npm, or the devShell/comments in `flake.nix` do not require re-seeding
+(because the `callCabal2nix` source is narrowed to `src/app/test/acac.cabal` via `fileset`).
+When in doubt, if the narinfo check above returns 404, push — that is reliable.
 
 #### 2. Cut a tag and push
 
