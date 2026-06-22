@@ -40,7 +40,7 @@ Linux 向けは nix の musl フル static + Cachix で配布できている([[A
 Chosen option: "1(ネイティブ runner + ghcup/cabal)"。
 
 - **Linux**: 現状維持(nix musl static + Cachix、[[ADR-0006]])。
-- **macOS / Windows**: GitHub Actions の**実機 runner**(`macos-14`=arm64 / `macos-13`=x64 /
+- **macOS / Windows**: GitHub Actions の**実機 runner**(`macos-14`=arm64 / `macos-15-intel`=x64 /
   `windows-latest`=x64)上で **`haskell-actions/setup`(中身は ghcup)で GHC+cabal を入れ、
   `cabal build` でネイティブバイナリを作る**。mac/Windows はフル static にせず、各 OS に
   標準で存在するシステムライブラリにリンクする(その OS では可搬)。
@@ -60,7 +60,7 @@ GHC クロスが困難で不採用。
 - Bad: ビルド道具が **nix(Linux) と cabal(mac/Windows) の2系統**になり保守点が増える
 - Bad: mac/Windows はフル static でないため、**libgmp(mac)や mingw 系 DLL(Windows)**など
   ランタイム依存で詰まる可能性があり、CI での調整が要る(対処はこちら側。利用者は無関係)
-- Bad: mac x64 は Intel runner(`macos-13`)を使う(Rust のような 1 runner クロスは GHC では難しい)
+- Bad: mac x64 は Intel runner(`macos-15-intel`)を使う(Rust のような 1 runner クロスは GHC では難しい)
 - Bad: ローカル(Linux)で mac/Windows を検証できず、CI 反復で緑にする必要がある
 
 ### Confirmation
