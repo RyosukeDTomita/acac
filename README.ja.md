@@ -2,6 +2,8 @@
 
 [![test](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml)
 [![release](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml)
+[![npm downloads](https://img.shields.io/npm/dw/acac-cli.svg)](https://www.npmjs.com/package/acac-cli)
+[![Socket score](https://socket.dev/api/badge/npm/package/acac-cli)](https://socket.dev/npm/package/acac-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## ABOUT
@@ -16,16 +18,6 @@ AC履歴の取得には [AtCoder Problems API](https://github.com/kenkoooo/AtCod
 
 ## HOW TO USE
 
-以下のバイナリを作成。
-
-- Linux
-  - linux-x64
-  - linux-arm64
-- macOS
-  - darwin-arm64
-  - darwin-x64
-- Windoes
-  - win32-x64
 
 ```shell
 npx acac-cli <atcoder-username>
@@ -66,9 +58,19 @@ npx acac-cli <atcoder-username>
 
 直近の AC 履歴を週ごとのテーブルで表示する。
 
-### Others
+### supported
 
-WIP
+以下のバイナリを作成。
+
+| OS      | binary type | 実機検証済み |
+| ------- | ----------- | ------------ |
+| Linux   | linux-x64   | ✅           |
+| Linux   | linux-arm64 |              |
+| macOS   | darwin-arm64 | ✅          |
+| macOS   | darwin-x64  |              |
+| Windows | win32-x64   | ✅           |
+
+✅ 以外の環境で実機検証できた方は、ぜひ [Issue](https://github.com/RyosukeDTomita/acac/issues) で連絡してほしい。
 
 [For Developer Memo](#for-developer-memo)を見てセットアップされたし。
 

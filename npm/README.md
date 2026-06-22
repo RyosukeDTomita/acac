@@ -2,6 +2,8 @@
 
 [![test](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml)
 [![release](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml)
+[![npm downloads](https://img.shields.io/npm/dw/acac-cli.svg)](https://www.npmjs.com/package/acac-cli)
+[![Socket score](https://socket.dev/api/badge/npm/package/acac-cli)](https://socket.dev/npm/package/acac-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [(日本語READMEはこちら)](README.ja.md)
@@ -20,14 +22,15 @@ It uses the [AtCoder Problems API](https://github.com/kenkoooo/AtCoderProblems/b
 
 The following binaries are built.
 
-- Linux
-  - linux-x64
-  - linux-arm64
-- macOS
-  - darwin-arm64
-  - darwin-x64
-- Windows
-  - win32-x64
+| OS      | binary type  | Verified on real device |
+| ------- | ------------ | ----------------------- |
+| Linux   | linux-x64    | ✅                      |
+| Linux   | linux-arm64  |                         |
+| macOS   | darwin-arm64 | ✅                      |
+| macOS   | darwin-x64   |                         |
+| Windows | win32-x64    | ✅                      |
+
+If you have verified acac on a real device other than the ✅ ones, please let us know via an [Issue](https://github.com/RyosukeDTomita/acac/issues).
 
 ```shell
 npx acac-cli <atcoder-username>
