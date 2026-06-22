@@ -1,15 +1,13 @@
 ---
-status: accepted
-date: 2026-06-22
-decision-makers: "@RyosukeDTomita"
----
+
+## status: accepted date: 2026-06-22 decision-makers: "@RyosukeDTomita"
 
 # ADR-0008: Windows/macOS バイナリはネイティブ runner + ghcup/cabal でビルドする
 
 ## Context and Problem Statement
 
-Linux 向けは nix の musl フル static + Cachix で配布できている([[ADR-0005]] [[ADR-0006]])。
-これを Windows/macOS にも広げたい。配布方式(npm の optionalDependencies、[[ADR-0005]])は
+Linux 向けは nix の musl フル static + Cachix で配布できている(\[[ADR-0005]\] \[[ADR-0006]\])。
+これを Windows/macOS にも広げたい。配布方式(npm の optionalDependencies、\[[ADR-0005]\])は
 共通で使えるが、**バイナリのビルド方法**を OS ごとに決める必要がある。
 
 制約:
@@ -24,22 +22,22 @@ Linux 向けは nix の musl フル static + Cachix で配布できている([[A
 ## Decision Drivers
 
 - 各 OS で**素の環境にあるシステムライブラリだけ**にリンクした可搬バイナリを作りたい
-- npm の optionalDependencies 配布([[ADR-0005]])をそのまま再利用したい
+- npm の optionalDependencies 配布(\[[ADR-0005]\])をそのまま再利用したい
 - **利用者には追加ツールを一切要求しない**(ビルド道具は CI 側だけ)
 - ローカル(Linux)で mac/Windows は検証できないので、CI で回して固める前提
 
 ## Considered Options
 
 1. ネイティブ runner + ghcup/cabal(mac/Windows)。Linux は現状の nix+Cachix を維持
-2. macOS も nix でビルド(ccusage と同方式)
-3. Linux から mac/Windows へクロスコンパイル
-4. Windows/macOS を対応しない(Linux のみ)
+1. macOS も nix でビルド(ccusage と同方式)
+1. Linux から mac/Windows へクロスコンパイル
+1. Windows/macOS を対応しない(Linux のみ)
 
 ## Decision Outcome
 
 Chosen option: "1(ネイティブ runner + ghcup/cabal)"。
 
-- **Linux**: 現状維持(nix musl static + Cachix、[[ADR-0006]])。
+- **Linux**: 現状維持(nix musl static + Cachix、\[[ADR-0006]\])。
 - **macOS / Windows**: GitHub Actions の**実機 runner**(`macos-14`=arm64 / `macos-15-intel`=x64 /
   `windows-latest`=x64)上で **`haskell-actions/setup`(中身は ghcup)で GHC+cabal を入れ、
   `cabal build` でネイティブバイナリを作る**。mac/Windows はフル static にせず、各 OS に
@@ -58,7 +56,7 @@ GHC クロスが困難で不採用。
 - Good: 各 OS で可搬なバイナリを配れ、**利用者は追加ツール不要**
 - Good: npm 配布(optionalDependencies)と `cli.js` の仕組みをそのまま流用できる
 - Bad: ビルド道具が **nix(Linux) と cabal(mac/Windows) の2系統**になり保守点が増える
-- Bad: mac/Windows はフル static でないため、**libgmp(mac)や mingw 系 DLL(Windows)**など
+- Bad: mac/Windows はフル static でないため、\*\*libgmp(mac)や mingw 系 DLL(Windows)\*\*など
   ランタイム依存で詰まる可能性があり、CI での調整が要る(対処はこちら側。利用者は無関係)
 - Bad: mac x64 は Intel runner(`macos-15-intel`)を使う(Rust のような 1 runner クロスは GHC では難しい)
 - Bad: ローカル(Linux)で mac/Windows を検証できず、CI 反復で緑にする必要がある
@@ -96,4 +94,4 @@ GHC クロスが困難で不採用。
 - 参考(ccusage の構成調査): linux/mac は nix・Windows は cargo のネイティブ runner マトリクス。
   mac を nix で配れるのは Rust が自己完結だから。
 - ビルド道具: `haskell-actions/setup`(ghcup ベースで GHC/cabal を導入)
-- 関連: [[ADR-0005]](npm 配布) / [[ADR-0006]](Linux 静的ビルドと Cachix)
+- 関連: \[[ADR-0005]\](npm 配布) / \[[ADR-0006]\](Linux 静的ビルドと Cachix)

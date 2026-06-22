@@ -1,8 +1,6 @@
 ---
-status: accepted
-date: 2026-06-21
-decision-makers: "@RyosukeDTomita"
----
+
+## status: accepted date: 2026-06-21 decision-makers: "@RyosukeDTomita"
 
 # ADR-0005: npm 配布はプラットフォーム別パッケージ(optionalDependencies)方式にする
 
@@ -26,16 +24,16 @@ postinstall: なし
 
 ## Decision Drivers
 
-* install 時にネットワーク download を避けたい(プロキシ/オフラインミラー/企業FWで失敗しない)
-* npm の整合性チェック・provenance に乗せたい
-* 主要ツールと同じ枯れた仕組みにしたい(将来のマルチプラットフォーム化も楽)
-* publish の手間は許容範囲に収めたい
+- install 時にネットワーク download を避けたい(プロキシ/オフラインミラー/企業FWで失敗しない)
+- npm の整合性チェック・provenance に乗せたい
+- 主要ツールと同じ枯れた仕組みにしたい(将来のマルチプラットフォーム化も楽)
+- publish の手間は許容範囲に収めたい
 
 ## Considered Options
 
 1. optionalDependencies でプラットフォーム別パッケージを配る(ccusage / esbuild 方式)
-2. postinstall で GitHub Releases からバイナリを download する(当初実装)
-3. バイナリを npm 本体パッケージに同梱する
+1. postinstall で GitHub Releases からバイナリを download する(当初実装)
+1. バイナリを npm 本体パッケージに同梱する
 
 ## Decision Outcome
 
@@ -63,12 +61,12 @@ CI(`release.yml`)は、タグ push 時に musl 静的バイナリをビルドし
 
 ### Consequences
 
-* Good: install 時に追加の download が無く、npm の仕組み(checksum / provenance)に乗る
-* Good: 企業 FW・オフラインミラー環境でも素直に動く
-* Good: マルチプラットフォーム対応は optionalDependencies と publish 対象を増やすだけ
-* Good: 主要ツールと同じ構成で、利用者にとっても馴染みがある
-* Bad: 1リリースで publish する npm パッケージが増える(linux-x64 のみでも メイン+1個)
-* Bad: メインとプラットフォーム別パッケージのバージョン整合を CI で担保する必要がある
+- Good: install 時に追加の download が無く、npm の仕組み(checksum / provenance)に乗る
+- Good: 企業 FW・オフラインミラー環境でも素直に動く
+- Good: マルチプラットフォーム対応は optionalDependencies と publish 対象を増やすだけ
+- Good: 主要ツールと同じ構成で、利用者にとっても馴染みがある
+- Bad: 1リリースで publish する npm パッケージが増える(linux-x64 のみでも メイン+1個)
+- Bad: メインとプラットフォーム別パッケージのバージョン整合を CI で担保する必要がある
 
 ### Confirmation
 
@@ -81,24 +79,24 @@ CI(`release.yml`)は、タグ push 時に musl 静的バイナリをビルドし
 
 ### 1. optionalDependencies(ccusage / esbuild 方式)
 
-* Good: install 時 download 不要・npm の整合性/provenance に乗る・業界標準
-* Bad: publish するパッケージ数が増える
+- Good: install 時 download 不要・npm の整合性/provenance に乗る・業界標準
+- Bad: publish するパッケージ数が増える
 
 ### 2. postinstall で Releases から download
 
-* Good: publish は npm 1個 + Release アセットで済む
-* Bad: install 時のネットワーク依存(プロキシ/オフライン/FW で失敗しうる)
-* Bad: 整合性は自前担保になりがち
+- Good: publish は npm 1個 + Release アセットで済む
+- Bad: install 時のネットワーク依存(プロキシ/オフライン/FW で失敗しうる)
+- Bad: 整合性は自前担保になりがち
 
 ### 3. バイナリを本体パッケージに同梱
 
-* Good: 仕組みが単純で download も不要
-* Bad: 全プラットフォーム分を1パッケージに含めるとサイズが肥大化する
-* Bad: os/cpu による出し分けができず無駄が大きい
+- Good: 仕組みが単純で download も不要
+- Bad: 全プラットフォーム分を1パッケージに含めるとサイズが肥大化する
+- Bad: os/cpu による出し分けができず無駄が大きい
 
 ## More Information
 
 - 参考: Rust 版 ccusage(https://github.com/ccusage/ccusage)の npm パッケージ構成
 - 同種の仕組み: esbuild / biome / swc の optionalDependencies パターン
 - 関連実装: `npm/`(メイン + `npm/packages/linux-x64`)、`.github/workflows/release.yml`
-- 静的バイナリのビルド: `flake.nix` の `packages.static`([[ADR-0004]] の取得方式とは別軸)
+- 静的バイナリのビルド: `flake.nix` の `packages.static`(\[[ADR-0004]\] の取得方式とは別軸)

@@ -61,13 +61,13 @@ npx acac-cli <atcoder-username>
 
 以下のバイナリを作成。
 
-| OS      | binary type | 実機検証済み |
+| OS | binary type | 実機検証済み |
 | ------- | ----------- | ------------ |
-| Linux   | linux-x64   | ✅           |
-| Linux   | linux-arm64 |              |
-| macOS   | darwin-arm64 | ✅          |
-| macOS   | darwin-x64  |              |
-| Windows | win32-x64   | ✅           |
+| Linux | linux-x64 | ✅ |
+| Linux | linux-arm64 | |
+| macOS | darwin-arm64 | ✅ |
+| macOS | darwin-x64 | |
+| Windows | win32-x64 | ✅ |
 
 ✅ 以外の環境で実機検証できた方は、ぜひ [Issue](https://github.com/RyosukeDTomita/acac/issues) で連絡してください。
 

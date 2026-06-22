@@ -1,7 +1,6 @@
 ---
-name: sync-readme-en
-description: 日本語の README.ja.md を正として、英語の README.md を原文に忠実に翻訳・同期する。README.ja.md を編集したあと英語版を最新化したいとき、「英語READMEを更新」「READMEを同期」などと言われたときに使う。
----
+
+## name: sync-readme-en description: 日本語の README.ja.md を正として、英語の README.md を原文に忠実に翻訳・同期する。README.ja.md を編集したあと英語版を最新化したいとき、「英語READMEを更新」「READMEを同期」などと言われたときに使う。
 
 # Sync English README from Japanese
 

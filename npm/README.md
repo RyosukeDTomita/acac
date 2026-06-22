@@ -63,13 +63,13 @@ It displays your recent AC history as a weekly table.
 
 The following binaries are built.
 
-| OS      | binary type  | Verified on real device |
+| OS | binary type | Verified on real device |
 | ------- | ------------ | ----------------------- |
-| Linux   | linux-x64    | ✅                      |
-| Linux   | linux-arm64  |                         |
-| macOS   | darwin-arm64 | ✅                      |
-| macOS   | darwin-x64   |                         |
-| Windows | win32-x64    | ✅                      |
+| Linux | linux-x64 | ✅ |
+| Linux | linux-arm64 | |
+| macOS | darwin-arm64 | ✅ |
+| macOS | darwin-x64 | |
+| Windows | win32-x64 | ✅ |
 
 If you have verified acac on a real device other than the ✅ ones, please let us know via an [Issue](https://github.com/RyosukeDTomita/acac/issues).
 
