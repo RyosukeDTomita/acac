@@ -2,7 +2,7 @@
 
 [![test](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/test.yml)
 [![release](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml/badge.svg)](https://github.com/RyosukeDTomita/acac-cli/actions/workflows/release.yml)
-[![npm downloads](https://img.shields.io/npm/dw/acac-cli.svg)](https://www.npmjs.com/package/acac-cli)
+[![npm downloads](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/RyosukeDTomita/acac-cli/badges/downloads.json)](https://www.npmjs.com/package/acac-cli)
 [![Socket score](https://socket.dev/api/badge/npm/package/acac-cli)](https://socket.dev/npm/package/acac-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 

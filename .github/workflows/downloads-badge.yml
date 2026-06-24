@@ -1,0 +1,48 @@
+name: downloads-badge
+
+# プラットフォーム別 npm パッケージ5つの DL 数を合計し、shields.io の endpoint バッジ用
+# JSON(downloads.json)を生成して、生成物専用の `badges` ブランチへ force-push する。
+# 本体 acac-cli は薄いシムでキャッシュに乗りやすく過小に出るため合計には含めない([[ADR-0009]])。
+on:
+  schedule:
+    # 毎日 00:00 UTC に更新(npm の download API は前日ぶんまでの集計)。
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  # TODO(検証用・確認後に削除): push でバッジ表示が変わるか確認するための一時トリガ。
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/downloads-badge.yml"
+
+permissions: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Compute total downloads and publish badge JSON
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # 各 install はちょうど1つのプラットフォームバイナリを引くので、5つの合計が
+          # 実 install 数の近似になる(本体 acac-cli は含めない)。
+          PKGS="acac-linux-x64,acac-linux-arm64,acac-darwin-arm64,acac-darwin-x64,acac-win32-x64"
+          TOTAL=$(curl -fsSL "https://api.npmjs.org/downloads/point/last-week/${PKGS}" \
+            | jq '[.[] | (.downloads // 0)] | add // 0')
+          echo "last-week total: ${TOTAL}"
+
+          # 生成物だけを置く orphan ブランチを毎回作り直して force-push する(履歴を溜めない)。
+          mkdir badge && cd badge
+          printf '{"schemaVersion":1,"label":"npm downloads","message":"%s/week","color":"blue"}\n' \
+            "${TOTAL}" > downloads.json
+          git init -q
+          git checkout -q -b badges
+          git add downloads.json
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "chore(badge): npm downloads ${TOTAL}/week"
+          git push -fq "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" badges
