@@ -8,7 +8,7 @@
 
 ## ABOUT
 
-AtCoderの直近のAC数とACした問題をCLIから確認するため[Haskell](https://www.haskell.org/)製CLIツール。
+[AtCoder](https://atcoder.jp/)の直近のAC数とACした問題をCLIから確認する[Haskell](https://www.haskell.org/)製CLIツール。
 
 [ccusage](https://ccusage.com/)にインスピレーションを受けて開発しました。
 

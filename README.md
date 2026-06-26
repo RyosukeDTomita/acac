@@ -10,7 +10,7 @@
 
 ## ABOUT
 
-A CLI tool written in [Haskell](https://www.haskell.org/) for checking your recent AtCoder AC count and the problems you solved, from the command line.
+A CLI tool written in [Haskell](https://www.haskell.org/) for checking your recent [AtCoder](https://atcoder.jp/) AC count and the problems you solved, from the command line.
 
 Inspired by [ccusage](https://ccusage.com/).
 
